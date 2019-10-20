@@ -34,4 +34,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), MapsActivityTipos.class);
         startActivity(intent);
     }
+
+    public void MiLocalizacion(View v){
+        Intent intent = new Intent(getApplicationContext(), MapsActivityMiLocalizacion.class);
+        startActivity(intent);
+    }
 }
