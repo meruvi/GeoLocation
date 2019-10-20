@@ -4,6 +4,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -12,11 +13,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity1 extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity1 extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
+    private Marker markerPrueba;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,11 +69,33 @@ public class MapsActivity1 extends FragmentActivity implements OnMapReadyCallbac
 
         ubication = new LatLng(-16.56812812228955, -68.17105065791885);
         mMap.addMarker(new MarkerOptions().position(ubication)
+                .draggable(true)
                 .title("Achocalla")
                 .snippet("Comunidad Achocalla")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
 
+        LatLng prueba;
+        prueba = new LatLng(-16.4908505, -68.1934713);
+        markerPrueba = googleMap.addMarker(new MarkerOptions().position(prueba)
+                .draggable(true)
+                .title("Prueba")
+                .snippet("Marca de prueba")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(ubication));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ubication,12));
+
+        googleMap.setOnMarkerClickListener(this);
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        String lat, lng;
+        lat = Double.toString(marker.getPosition().latitude);
+        lng = Double.toString(marker.getPosition().longitude);
+        if(marker.equals(markerPrueba)){
+            Toast.makeText(this, "Latitud: " + lat + "\nLongitud: " + lng, Toast.LENGTH_SHORT).show();
+        }
+        return false;
     }
 }
