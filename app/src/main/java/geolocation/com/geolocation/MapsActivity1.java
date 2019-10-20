@@ -1,13 +1,13 @@
 package geolocation.com.geolocation;
 
-import androidx.fragment.app.FragmentActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
@@ -16,10 +16,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity1 extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+import java.util.Locale;
+
+public class MapsActivity1 extends AppCompatActivity implements OnMarkerDragListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
-    private Marker markerPrueba;
+    private Marker markerPrueba, markerDrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,10 +84,20 @@ public class MapsActivity1 extends FragmentActivity implements OnMapReadyCallbac
                 .snippet("Marca de prueba")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
 
+        //Dragable
+        LatLng umsa;
+        umsa = new LatLng(-16.5048959, -68.1300381);
+        markerDrag = googleMap.addMarker(new MarkerOptions().position(umsa)
+                .draggable(true)
+                .title("UMSA")
+                .snippet("Prueba dragable")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(ubication));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ubication,12));
 
         googleMap.setOnMarkerClickListener(this);
+        googleMap.setOnMarkerDragListener(this);
     }
 
     @Override
@@ -97,5 +109,30 @@ public class MapsActivity1 extends FragmentActivity implements OnMapReadyCallbac
             Toast.makeText(this, "Latitud: " + lat + "\nLongitud: " + lng, Toast.LENGTH_SHORT).show();
         }
         return false;
+    }
+
+    @Override
+    public void onMarkerDragStart(Marker marker) {
+        if(marker.equals(markerDrag)){
+            Toast.makeText(this, "Start", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onMarkerDrag(Marker marker) {
+        if(marker.equals(markerDrag)){
+            String newTitle = String.format(Locale.getDefault(),
+                    getString(R.string.marker_detail_latlng),
+                    marker.getPosition().latitude,
+                    marker.getPosition().longitude
+                    );
+            setTitle(newTitle);
+        }
+    }
+
+    @Override
+    public void onMarkerDragEnd(Marker marker) {
+        Toast.makeText(this, "Finish", Toast.LENGTH_SHORT).show();
+        setTitle(R.string.app_name);
     }
 }
