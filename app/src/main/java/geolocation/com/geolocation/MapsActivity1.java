@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -18,10 +19,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Locale;
 
-public class MapsActivity1 extends AppCompatActivity implements OnMarkerDragListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+public class MapsActivity1 extends AppCompatActivity implements OnInfoWindowClickListener, OnMarkerDragListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
-    private Marker markerPrueba, markerDrag;
+    private Marker markerPrueba, markerDrag, infoWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,11 +94,27 @@ public class MapsActivity1 extends AppCompatActivity implements OnMarkerDragList
                 .snippet("Prueba dragable")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(ubication));
+        //Información extendida
+        LatLng infocal;
+        infocal = new LatLng(-16.5068811, -68.1647368);
+        infoWindow = googleMap.addMarker(new MarkerOptions().position(infocal)
+                .draggable(true)
+                .title("INFOCAL")
+                .snippet("Prueba Información Extendida")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+
+        //CAMARA
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(ubication));infoWindow
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ubication,12));
 
+        //CLICK EN EL MARCADOR
         googleMap.setOnMarkerClickListener(this);
+
+        //ARRASTRAR EL MARCADOR
         googleMap.setOnMarkerDragListener(this);
+
+        //DIALOG EN EL TITULO DEL MARCADOR
+        googleMap.setOnInfoWindowClickListener(this);
     }
 
     @Override
@@ -134,5 +151,14 @@ public class MapsActivity1 extends AppCompatActivity implements OnMarkerDragList
     public void onMarkerDragEnd(Marker marker) {
         Toast.makeText(this, "Finish", Toast.LENGTH_SHORT).show();
         setTitle(R.string.app_name);
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        if(marker.equals(infoWindow)){
+            MarkerDialogFragment.newInstance(marker.getTitle(),
+                    getString(R.string.marker_info))
+                    .show(getSupportFragmentManager(), null);
+        }
     }
 }
