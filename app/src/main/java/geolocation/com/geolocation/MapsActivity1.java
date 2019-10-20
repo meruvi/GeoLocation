@@ -1,12 +1,16 @@
 package geolocation.com.geolocation;
 
 import androidx.fragment.app.FragmentActivity;
+
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -37,10 +41,36 @@ public class MapsActivity1 extends FragmentActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        //setZoomControlsEnabled
+        UiSettings uiSettings = mMap.getUiSettings();
+
+        uiSettings.setZoomControlsEnabled(true);
+        uiSettings.setCompassEnabled(true);
+        //uiSettings.setMyLocationEnabled(true);
+        uiSettings.setMapToolbarEnabled(true);
+
+        LatLng ubication;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        ubication = new LatLng(-16.4955455, -68.1336229);
+        mMap.addMarker(new MarkerOptions().position(ubication)
+                .title("La Paz")
+                .snippet("Ciudad de La Paz, Bolivia")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.mexico)));
+
+        ubication = new LatLng(-16.4955593, -68.1934964);
+        mMap.addMarker(new MarkerOptions().position(ubication)
+                .title("El Alto")
+                .snippet("Ciudad de El Alto, Bolivia")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
+
+        ubication = new LatLng(-16.56812812228955, -68.17105065791885);
+        mMap.addMarker(new MarkerOptions().position(ubication)
+                .title("Achocalla")
+                .snippet("Comunidad Achocalla")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(ubication));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ubication,12));
     }
 }
